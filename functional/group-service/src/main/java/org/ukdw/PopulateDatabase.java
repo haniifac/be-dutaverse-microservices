@@ -1,5 +1,6 @@
 package org.ukdw;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.ukdw.entity.GroupEntity;
@@ -8,11 +9,8 @@ import org.ukdw.repository.GroupRepository;
 @Component
 public class PopulateDatabase implements CommandLineRunner {
 
-    private final GroupRepository groupRepository;
-
-    public PopulateDatabase(GroupRepository groupRepository) {
-        this.groupRepository = groupRepository;
-    }
+    @Autowired
+    private GroupRepository groupRepository;
 
     @Override
     public void run(String... args) throws Exception {
