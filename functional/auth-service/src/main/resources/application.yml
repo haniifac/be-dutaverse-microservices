@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    url: jdbc:h2:tcp://localhost:9090/mem:mydb
+    username: sa
+    password: password
+    driverClassName: org.h2.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    defer-datasource-initialization: true
+    show-sql: true
+
+app:
+  auth:
+    tokenSecret: 926D96C90030DD58429D2751AC1BDBBC0CszIYI8wlobG4pPOwb5TGYpJBRwsZH9
+    tokenExpirationDay: 1
+
+token:
+  signing:
+    key: 413F4428472B4B6250655368566D5970337336763979244226452948404D6351
+
+server:
+  port: 8082
