@@ -8,7 +8,7 @@ import org.ukdw.dto.request.CreateAttendanceRequest;
 import org.ukdw.dto.request.StudentAttendanceRequest;
 import org.ukdw.dto.request.UpdateAttendanceRequest;
 import org.ukdw.entity.AttendanceEntity;
-import org.ukdw.service.AttendanceService;
+import org.ukdw.service.implementation.AttendanceServiceImpl;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,20 +18,20 @@ import java.util.Optional;
 public class AttendanceController {
 
     @Autowired
-    private AttendanceService attendanceService;
+    private AttendanceServiceImpl attendanceServiceImpl;
 
     // Create attendance
     @PostMapping()
     public ResponseEntity<AttendanceEntity> createAttendance(
             @RequestBody CreateAttendanceRequest request) {
-        AttendanceEntity attendance = attendanceService.createAttendance(request.getClassroomId(), request.getOpenTime(), request.getCloseTime());
+        AttendanceEntity attendance = attendanceServiceImpl.createAttendance(request.getClassroomId(), request.getOpenTime(), request.getCloseTime());
         return ResponseEntity.ok(attendance);
     }
 
     // Delete attendance
     @DeleteMapping("/{attendanceId}")
     public ResponseEntity<Void> deleteAttendance(@PathVariable Long attendanceId) {
-        attendanceService.deleteAttendance(attendanceId);
+        attendanceServiceImpl.deleteAttendance(attendanceId);
         return ResponseEntity.noContent().build();
     }
 
@@ -40,28 +40,28 @@ public class AttendanceController {
     public ResponseEntity<AttendanceEntity> editAttendance(
             @PathVariable Long attendanceId,
             @RequestBody UpdateAttendanceRequest request) {
-        AttendanceEntity updatedAttendance = attendanceService.editAttendance(attendanceId, request.getOpenTime(), request.getCloseTime());
+        AttendanceEntity updatedAttendance = attendanceServiceImpl.editAttendance(attendanceId, request.getOpenTime(), request.getCloseTime());
         return ResponseEntity.ok(updatedAttendance);
     }
 
     // Get all attendance records
     @GetMapping
     public ResponseEntity<List<AttendanceEntity>> getAllAttendances() {
-        List<AttendanceEntity> attendances = attendanceService.getAllAttendances();
+        List<AttendanceEntity> attendances = attendanceServiceImpl.getAllAttendances();
         return ResponseEntity.ok(attendances);
     }
 
     // Get attendance by ID
     @GetMapping("/{attendanceId}")
     public ResponseEntity<AttendanceEntity> getAttendanceById(@PathVariable Long attendanceId) {
-        AttendanceEntity attendance = attendanceService.getAttendanceById(attendanceId);
+        AttendanceEntity attendance = attendanceServiceImpl.getAttendanceById(attendanceId);
         return ResponseEntity.ok(attendance);
     }
 
     // Get attendance by classroom ID
     @GetMapping("/classroom/{classroomId}")
     public ResponseEntity<?> getAttendanceByClassroomId(@PathVariable Long classroomId) {
-        Optional<List<AttendanceEntity>> attendances = attendanceService.getAttendanceByClassroomId(classroomId);
+        Optional<List<AttendanceEntity>> attendances = attendanceServiceImpl.getAttendanceByClassroomId(classroomId);
         return attendances.map(ResponseEntity::ok)
                 .orElseThrow(() -> new ResourceNotFoundException("Classroom not found with id " + classroomId));
     }
@@ -71,7 +71,7 @@ public class AttendanceController {
             @PathVariable Long attendanceId,
             @RequestBody StudentAttendanceRequest request
     ){
-        attendanceService.setStudentAttendance(attendanceId, request.getStudentId());
+        attendanceServiceImpl.setStudentAttendance(attendanceId, request.getStudentId());
         return ResponseEntity.ok("Success");
     }
 
@@ -80,7 +80,7 @@ public class AttendanceController {
             @PathVariable Long attendanceId,
             @RequestBody StudentAttendanceRequest request
     ){
-        attendanceService.deleteStudentAttendance(attendanceId, request.getStudentId());
+        attendanceServiceImpl.deleteStudentAttendance(attendanceId, request.getStudentId());
         return ResponseEntity.ok("Success");
     }
 

@@ -8,9 +8,8 @@ import org.ukdw.common.ResponseWrapper;
 import org.ukdw.common.exception.ResourceNotFoundException;
 import org.ukdw.dto.classroom.ClassroomPublicDTO;
 import org.ukdw.dto.request.UpdateClassroomRequest;
-import org.ukdw.entity.AttendanceEntity;
 import org.ukdw.entity.ClassroomEntity;
-import org.ukdw.service.ClassroomService;
+import org.ukdw.service.implementation.ClassroomServiceImpl;
 import org.ukdw.util.ClassroomMapper;
 
 import java.util.List;
@@ -22,17 +21,17 @@ import java.util.stream.Collectors;
 public class ClassroomController {
 
     @Autowired
-    private ClassroomService classroomService;
+    private ClassroomServiceImpl classroomServiceImpl;
 
     @PostMapping
     public ResponseEntity<ClassroomEntity> createClassroom(@RequestBody ClassroomEntity classroom) {
-        ClassroomEntity createdClassroom = classroomService.createClassroom(classroom);
+        ClassroomEntity createdClassroom = classroomServiceImpl.createClassroom(classroom);
         return new ResponseEntity<>(createdClassroom, HttpStatus.CREATED);
     }
 
     @GetMapping()
     public ResponseEntity<?> getAllClassroom() {
-        List<ClassroomEntity> classrooms = classroomService.getAllClassroom();
+        List<ClassroomEntity> classrooms = classroomServiceImpl.getAllClassroom();
         List<ClassroomPublicDTO> dtoList = classrooms.stream()
                 .map(ClassroomMapper::toPublicDTO)
                 .collect(Collectors.toList());
@@ -43,7 +42,7 @@ public class ClassroomController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getClassroomById(@PathVariable Long id) {
-        Optional<ClassroomEntity> classroom = classroomService.getClassroomById(id);
+        Optional<ClassroomEntity> classroom = classroomServiceImpl.getClassroomById(id);
         return classroom.map(ResponseEntity::ok)
 //                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
                 .orElseThrow(() -> new ResourceNotFoundException("Classroom not found with id:" + id));
@@ -51,13 +50,13 @@ public class ClassroomController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ClassroomEntity> updateClassroom(@PathVariable Long id, @RequestBody UpdateClassroomRequest request) {
-        ClassroomEntity updated = classroomService.updateClassroom(id, request);
+        ClassroomEntity updated = classroomServiceImpl.updateClassroom(id, request);
         return ResponseEntity.ok(updated);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteClassroom(@PathVariable Long id) {
-        classroomService.deleteClassroom(id);
+        classroomServiceImpl.deleteClassroom(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
