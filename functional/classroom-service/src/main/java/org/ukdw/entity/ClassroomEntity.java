@@ -21,10 +21,9 @@ public class ClassroomEntity {
 
     private String description;
 
-    @Column(name = "tahun_ajaran", nullable = false)
+    @Column(name = "tahun_ajaran")
     private String tahunAjaran;
 
-    @Column(nullable = false)
     private String semester;
 
     @ElementCollection

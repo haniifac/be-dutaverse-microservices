@@ -10,6 +10,7 @@ import org.ukdw.repository.ClassroomRepository;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AttendanceService  {
@@ -67,7 +68,7 @@ public class AttendanceService  {
                 .orElseThrow(() -> new ResourceNotFoundException("Attendance not found with id " + attendanceId));
     }
 
-    public List<AttendanceEntity> getAttendanceByClassroomId(Long classroomId) {
+    public Optional<List<AttendanceEntity>> getAttendanceByClassroomId(Long classroomId) {
         return attendanceRepository.findByClassroomId(classroomId);
     }
 
@@ -77,11 +78,11 @@ public class AttendanceService  {
                 .orElseThrow(() -> new ResourceNotFoundException("Classroom not found with id " + classroomId));
 
         // Find all attendance records for the given classroom ID
-        List<AttendanceEntity> attendances = attendanceRepository.findByClassroomId(classroomId);
+        Optional<List<AttendanceEntity>> attendances = attendanceRepository.findByClassroomId(classroomId);
 
         // Delete all attendance records for the classroom
-        if (!attendances.isEmpty()) {
-            attendanceRepository.deleteAll(attendances);
+        if (attendances.isPresent()) {
+            attendanceRepository.deleteAll(attendances.get());
         } else {
             throw new ResourceNotFoundException("No attendance records found for classroom id " + classroomId);
         }

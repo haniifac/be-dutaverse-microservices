@@ -15,6 +15,6 @@ public interface AttendanceRepository extends JpaRepository<AttendanceEntity, Lo
     @Query("SELECT a FROM AttendanceEntity a WHERE a.classroom.id = :classroomId AND :now BETWEEN a.openTime AND a.closeTime")
     Optional<AttendanceEntity> findActiveAttendance(Long classroomId, LocalDateTime now);
 
-    List<AttendanceEntity> findByClassroomId(Long classroomId);
+    Optional<List<AttendanceEntity>> findByClassroomId(Long classroomId);
 
 }

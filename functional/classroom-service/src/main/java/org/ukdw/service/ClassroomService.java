@@ -63,18 +63,11 @@ public class ClassroomService {
 
     public void deleteClassroom(Long classroomId) {
         Optional<ClassroomEntity> classroomOpt = classroomRepository.findById(classroomId);
+        Optional<List<AttendanceEntity>> attendanceOpt = attendanceRepository.findByClassroomId(classroomId);
         if (classroomOpt.isPresent()) {
-            ClassroomEntity classroom = classroomOpt.get();
-
-            classroom.getTeacherIds().clear();
-            classroom.getStudentIds().clear();
-
-            attendanceService.deleteAttendancesByClassroomId(classroomId);
-
-            // Save the updated classroom entity with cleared teacher and student lists
-            classroomRepository.save(classroom);
-
-//             Now delete the classroom
+            if (attendanceOpt.isPresent()){
+                attendanceService.deleteAttendancesByClassroomId(classroomId);
+            }
             classroomRepository.deleteById(classroomId);
         } else {
             throw new ResourceNotFoundException("Classroom not found with id " + classroomId);

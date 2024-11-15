@@ -1,9 +1,11 @@
 package org.ukdw.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.ukdw.entity.AttendanceEntity;
+import org.ukdw.entity.ClassroomEntity;
 import org.ukdw.service.AttendanceService;
 
 import java.time.Instant;
@@ -61,8 +63,9 @@ public class AttendanceController {
     // Get attendance by classroom ID
     @GetMapping("/classroom/{classroomId}")
     public ResponseEntity<List<AttendanceEntity>> getAttendanceByClassroomId(@PathVariable Long classroomId) {
-        List<AttendanceEntity> attendances = attendanceService.getAttendanceByClassroomId(classroomId);
-        return ResponseEntity.ok(attendances);
+        Optional<List<AttendanceEntity>> attendances = attendanceService.getAttendanceByClassroomId(classroomId);
+        return attendances.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
     // Delete all attendances by classroom ID

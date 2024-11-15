@@ -20,7 +20,7 @@ public class AttendanceEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinColumn(name = "classroom_id", nullable = false)
     @JsonBackReference // Prevent recursion on the back side of the relationship
     private ClassroomEntity classroom;
