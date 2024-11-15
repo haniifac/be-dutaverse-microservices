@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.ukdw.common.ResponseWrapper;
+import org.ukdw.dto.request.UpdateClassroomRequest;
 import org.ukdw.entity.AttendanceEntity;
 import org.ukdw.entity.ClassroomEntity;
 import org.ukdw.service.ClassroomService;
@@ -39,8 +40,8 @@ public class ClassroomController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ClassroomEntity> updateClassroom(@PathVariable Long id, @RequestBody ClassroomEntity updatedClassroom) {
-        ClassroomEntity updated = classroomService.updateClassroom(id, updatedClassroom);
+    public ResponseEntity<ClassroomEntity> updateClassroom(@PathVariable Long id, @RequestBody UpdateClassroomRequest request) {
+        ClassroomEntity updated = classroomService.updateClassroom(id, request);
         return ResponseEntity.ok(updated);
     }
 
@@ -52,16 +53,16 @@ public class ClassroomController {
 
     // TODO: implement this when auth-service is working
     // Attendance system
-    /*@PostMapping("/{classroomId}/attendance")
-    public ResponseEntity<String> recordAttendance(
-            @PathVariable Long classroomId,
-            @RequestParam Long studentId,
-            @RequestHeader("Authorization") String jwtToken) {
-        String result = classroomService.recordAttendance(classroomId, studentId, jwtToken);
-        if ("Attendance recorded successfully".equals(result)) {
-            return ResponseEntity.ok(result);
-        } else {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(result);
-        }
-    }*/
+//    @PostMapping("/{classroomId}/attendance")
+//    public ResponseEntity<String> recordAttendance(
+//            @PathVariable Long classroomId,
+//            @RequestParam Long studentId,
+//            @RequestHeader("Authorization") String jwtToken) {
+//        String result = classroomService.recordAttendance(classroomId, studentId, jwtToken);
+//        if ("Attendance recorded successfully".equals(result)) {
+//            return ResponseEntity.ok(result);
+//        } else {
+//            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(result);
+//        }
+//    }
 }

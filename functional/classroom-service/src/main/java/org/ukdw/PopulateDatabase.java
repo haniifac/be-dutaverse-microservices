@@ -32,13 +32,15 @@ public class PopulateDatabase implements CommandLineRunner {
         if (classroomRepository.count() == 0) {
             ClassroomEntity mathClassroom = new ClassroomEntity();
             mathClassroom.setName("Math Classroom");
-            mathClassroom.setDescription("Kelas Univ Indonesia Tahun Ajaran 2024/2025");
+            mathClassroom.setDescription("Kelas Univ Indonesia, Membahas tentang blablabla");
+            mathClassroom.setSemester("Genap");
+            mathClassroom.setTahunAjaran("2024/2025");
             mathClassroom.setTeacherIds(Set.of(1L, 2L));  // Example teacher IDs
             mathClassroom.setStudentIds(Set.of(10L, 11L, 12L));  // Example student IDs
             ClassroomEntity savedClassroom = classroomService.createClassroom(mathClassroom);
 
             Instant currentTime = Instant.now();
-            // Sample data for attendance records
+
             AttendanceEntity mathAttendance = new AttendanceEntity();
             mathAttendance.setClassroom(savedClassroom);
             mathAttendance.setOpenTime(currentTime.minus(4, ChronoUnit.HOURS));

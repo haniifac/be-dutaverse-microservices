@@ -1,11 +1,9 @@
 package org.ukdw.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import java.util.HashSet;
-import java.util.List;
+
 import java.util.Set;
 
 @Entity
@@ -22,6 +20,12 @@ public class ClassroomEntity {
     private String name;
 
     private String description;
+
+    @Column(name = "tahun_ajaran", nullable = false)
+    private String tahunAjaran;
+
+    @Column(nullable = false)
+    private String semester;
 
     @ElementCollection
     @CollectionTable(name = "classroom_teacher", joinColumns = @JoinColumn(name = "classroom_id"))

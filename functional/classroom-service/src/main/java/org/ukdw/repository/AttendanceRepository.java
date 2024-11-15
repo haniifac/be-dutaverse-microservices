@@ -7,10 +7,14 @@ import org.ukdw.entity.AttendanceEntity;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.List;
 
 @Repository
 public interface AttendanceRepository extends JpaRepository<AttendanceEntity, Long> {
 
     @Query("SELECT a FROM AttendanceEntity a WHERE a.classroom.id = :classroomId AND :now BETWEEN a.openTime AND a.closeTime")
     Optional<AttendanceEntity> findActiveAttendance(Long classroomId, LocalDateTime now);
+
+    List<AttendanceEntity> findByClassroomId(Long classroomId);
+
 }

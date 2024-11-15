@@ -2,6 +2,8 @@ package org.ukdw.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.ukdw.common.exception.ResourceNotFoundException;
+import org.ukdw.dto.request.UpdateClassroomRequest;
 import org.ukdw.entity.AttendanceEntity;
 import org.ukdw.entity.ClassroomEntity;
 import org.ukdw.repository.AttendanceRepository;
@@ -20,6 +22,9 @@ public class ClassroomService {
     @Autowired
     private AttendanceRepository attendanceRepository;
 
+    @Autowired
+    private AttendanceService attendanceService;
+
     // CRUD operations for Classroom
     public ClassroomEntity createClassroom(ClassroomEntity classroom) {
         return classroomRepository.save(classroom);
@@ -33,13 +38,47 @@ public class ClassroomService {
         return classroomRepository.findById(classroomId);
     }
 
-    public ClassroomEntity updateClassroom(Long classroomId, ClassroomEntity updatedClassroom) {
-        updatedClassroom.setId(classroomId);
-        return classroomRepository.save(updatedClassroom);
+    public ClassroomEntity updateClassroom(Long classroomId, UpdateClassroomRequest updatedClassroom) {
+        ClassroomEntity classroomEntity = classroomRepository.findById(classroomId)
+                .orElseThrow(() -> new ResourceNotFoundException("Classroom not found with id " + classroomId));
+
+        if(updatedClassroom.getName() != null){
+            classroomEntity.setName(updatedClassroom.getName());
+        }
+
+        if (updatedClassroom.getDescription() != null){
+            classroomEntity.setDescription(updatedClassroom.getDescription());
+        }
+
+        if (updatedClassroom.getTahunAjaran() != null){
+            classroomEntity.setTahunAjaran(updatedClassroom.getTahunAjaran());
+        }
+
+        if (updatedClassroom.getSemester() != null){
+            classroomEntity.setSemester(updatedClassroom.getSemester());
+        }
+
+        return classroomRepository.save(classroomEntity);
     }
 
     public void deleteClassroom(Long classroomId) {
-        classroomRepository.deleteById(classroomId);
+        Optional<ClassroomEntity> classroomOpt = classroomRepository.findById(classroomId);
+        if (classroomOpt.isPresent()) {
+            ClassroomEntity classroom = classroomOpt.get();
+
+            classroom.getTeacherIds().clear();
+            classroom.getStudentIds().clear();
+
+            attendanceService.deleteAttendancesByClassroomId(classroomId);
+
+            // Save the updated classroom entity with cleared teacher and student lists
+            classroomRepository.save(classroom);
+
+//             Now delete the classroom
+            classroomRepository.deleteById(classroomId);
+        } else {
+            throw new ResourceNotFoundException("Classroom not found with id " + classroomId);
+        }
     }
 
     // TODO: implement this when auth-service is working
