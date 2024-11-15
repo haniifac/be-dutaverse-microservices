@@ -8,7 +8,7 @@ import org.ukdw.entity.AttendanceRecord;
 import org.ukdw.entity.ClassroomEntity;
 import org.ukdw.repository.AttendanceRepository;
 import org.ukdw.repository.ClassroomRepository;
-import org.ukdw.service.ClassroomService;
+import org.ukdw.service.implementation.ClassroomServiceImpl;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -25,20 +25,22 @@ public class PopulateDatabase implements CommandLineRunner {
     private ClassroomRepository classroomRepository;
 
     @Autowired
-    private ClassroomService classroomService;
+    private ClassroomServiceImpl classroomServiceImpl;
 
     @Override
     public void run(String... args) throws Exception {
         if (classroomRepository.count() == 0) {
             ClassroomEntity mathClassroom = new ClassroomEntity();
             mathClassroom.setName("Math Classroom");
-            mathClassroom.setDescription("Kelas Univ Indonesia Tahun Ajaran 2024/2025");
+            mathClassroom.setDescription("Kelas Univ Indonesia, Membahas tentang blablabla");
+            mathClassroom.setSemester("Genap");
+            mathClassroom.setTahunAjaran("2024/2025");
             mathClassroom.setTeacherIds(Set.of(1L, 2L));  // Example teacher IDs
             mathClassroom.setStudentIds(Set.of(10L, 11L, 12L));  // Example student IDs
-            ClassroomEntity savedClassroom = classroomService.createClassroom(mathClassroom);
+            ClassroomEntity savedClassroom = classroomServiceImpl.createClassroom(mathClassroom);
 
             Instant currentTime = Instant.now();
-            // Sample data for attendance records
+
             AttendanceEntity mathAttendance = new AttendanceEntity();
             mathAttendance.setClassroom(savedClassroom);
             mathAttendance.setOpenTime(currentTime.minus(4, ChronoUnit.HOURS));
