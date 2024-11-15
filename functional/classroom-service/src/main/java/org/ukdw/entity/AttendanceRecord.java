@@ -24,6 +24,7 @@ public class AttendanceRecord {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "attendance_id")
+    @JsonBackReference // Prevent recursion on the child side
     private AttendanceEntity attendance;
 
     public AttendanceRecord(){}

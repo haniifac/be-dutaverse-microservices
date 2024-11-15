@@ -32,6 +32,7 @@ public class AttendanceEntity {
     private Instant closeTime;
 
     @OneToMany(mappedBy = "attendance", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference // Manage serialization on the parent side
     private Set<AttendanceRecord> records = new HashSet<>();
 
 }
