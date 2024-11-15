@@ -1,14 +1,15 @@
 package org.ukdw.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.ukdw.common.exception.ResourceNotFoundException;
+import org.ukdw.dto.request.CreateAttendanceRequest;
+import org.ukdw.dto.request.StudentAttendanceRequest;
+import org.ukdw.dto.request.UpdateAttendanceRequest;
 import org.ukdw.entity.AttendanceEntity;
-import org.ukdw.entity.ClassroomEntity;
 import org.ukdw.service.AttendanceService;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,12 +21,10 @@ public class AttendanceController {
     private AttendanceService attendanceService;
 
     // Create attendance
-    @PostMapping("/create")
+    @PostMapping()
     public ResponseEntity<AttendanceEntity> createAttendance(
-            @RequestParam Long classroomId,
-            @RequestParam Instant openTime,
-            @RequestParam Instant closeTime) {
-        AttendanceEntity attendance = attendanceService.createAttendance(classroomId, openTime, closeTime);
+            @RequestBody CreateAttendanceRequest request) {
+        AttendanceEntity attendance = attendanceService.createAttendance(request.getClassroomId(), request.getOpenTime(), request.getCloseTime());
         return ResponseEntity.ok(attendance);
     }
 
@@ -40,9 +39,8 @@ public class AttendanceController {
     @PutMapping("/{attendanceId}")
     public ResponseEntity<AttendanceEntity> editAttendance(
             @PathVariable Long attendanceId,
-            @RequestParam Instant openTime,
-            @RequestParam Instant closeTime) {
-        AttendanceEntity updatedAttendance = attendanceService.editAttendance(attendanceId, openTime, closeTime);
+            @RequestBody UpdateAttendanceRequest request) {
+        AttendanceEntity updatedAttendance = attendanceService.editAttendance(attendanceId, request.getOpenTime(), request.getCloseTime());
         return ResponseEntity.ok(updatedAttendance);
     }
 
@@ -62,10 +60,28 @@ public class AttendanceController {
 
     // Get attendance by classroom ID
     @GetMapping("/classroom/{classroomId}")
-    public ResponseEntity<List<AttendanceEntity>> getAttendanceByClassroomId(@PathVariable Long classroomId) {
+    public ResponseEntity<?> getAttendanceByClassroomId(@PathVariable Long classroomId) {
         Optional<List<AttendanceEntity>> attendances = attendanceService.getAttendanceByClassroomId(classroomId);
         return attendances.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+                .orElseThrow(() -> new ResourceNotFoundException("Classroom not found with id " + classroomId));
+    }
+
+    @PostMapping("/student/{attendanceId}")
+    public ResponseEntity<?> setStudentAttendance(
+            @PathVariable Long attendanceId,
+            @RequestBody StudentAttendanceRequest request
+    ){
+        attendanceService.setStudentAttendance(attendanceId, request.getStudentId());
+        return ResponseEntity.ok("Success");
+    }
+
+    @DeleteMapping("/student/{attendanceId}")
+    public ResponseEntity<?> deleteStudentAttendanceByAttendanceIdAndStudentId(
+            @PathVariable Long attendanceId,
+            @RequestBody StudentAttendanceRequest request
+    ){
+        attendanceService.deleteStudentAttendance(attendanceId, request.getStudentId());
+        return ResponseEntity.ok("Success");
     }
 
     // Delete all attendances by classroom ID

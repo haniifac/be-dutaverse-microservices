@@ -83,6 +83,19 @@ public class ClassroomService {
         }
     }
 
+    public boolean isStudentEnrolled(Long classroomId, Long studentId){
+        Optional<ClassroomEntity> classroomOpt = classroomRepository.findById(classroomId);
+
+        if(classroomOpt.isEmpty()){
+            throw new ResourceNotFoundException("Classroom not found with id " + classroomId);
+        }
+
+        ClassroomEntity classroom = classroomOpt.get();
+        return classroom.getStudentIds()
+                .stream()
+                .anyMatch(id -> id.equals(studentId));
+    }
+
     public void addTeacherToClassroom(Long classroomId, Long teacherId) {
         ClassroomEntity classroom = classroomRepository.findById(classroomId)
                 .orElseThrow(() -> new IllegalArgumentException("Classroom not found"));
