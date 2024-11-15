@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.ukdw.common.ResponseWrapper;
+import org.ukdw.common.exception.ResourceNotFoundException;
 import org.ukdw.dto.classroom.ClassroomPublicDTO;
 import org.ukdw.dto.request.UpdateClassroomRequest;
 import org.ukdw.entity.AttendanceEntity;
@@ -41,10 +42,11 @@ public class ClassroomController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ClassroomEntity> getClassroomById(@PathVariable Long id) {
+    public ResponseEntity<?> getClassroomById(@PathVariable Long id) {
         Optional<ClassroomEntity> classroom = classroomService.getClassroomById(id);
         return classroom.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+//                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+                .orElseThrow(() -> new ResourceNotFoundException("Classroom not found with id:" + id));
     }
 
     @PutMapping("/{id}")

@@ -10,6 +10,7 @@ import org.ukdw.repository.AttendanceRepository;
 import org.ukdw.repository.ClassroomRepository;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,6 +59,14 @@ public class ClassroomService {
             classroomEntity.setSemester(updatedClassroom.getSemester());
         }
 
+        if (updatedClassroom.getTeacherIds() != null){
+            classroomEntity.setTeacherIds(updatedClassroom.getTeacherIds());
+        }
+
+        if (updatedClassroom.getStudentIds() != null){
+            classroomEntity.setStudentIds(updatedClassroom.getStudentIds());
+        }
+
         return classroomRepository.save(classroomEntity);
     }
 
@@ -72,6 +81,58 @@ public class ClassroomService {
         } else {
             throw new ResourceNotFoundException("Classroom not found with id " + classroomId);
         }
+    }
+
+    public void addTeacherToClassroom(Long classroomId, Long teacherId) {
+        ClassroomEntity classroom = classroomRepository.findById(classroomId)
+                .orElseThrow(() -> new IllegalArgumentException("Classroom not found"));
+
+        if (classroom.getTeacherIds() == null) {
+            classroom.setTeacherIds(new HashSet<>());
+        }
+
+        if (!classroom.getTeacherIds().add(teacherId)) {
+            throw new IllegalStateException("Teacher already exists in the classroom");
+        }
+
+        classroomRepository.save(classroom);
+    }
+
+    public void removeTeacherFromClassroom(Long classroomId, Long teacherId) {
+        ClassroomEntity classroom = classroomRepository.findById(classroomId)
+                .orElseThrow(() -> new IllegalArgumentException("Classroom not found"));
+
+        if (classroom.getTeacherIds() == null || !classroom.getTeacherIds().remove(teacherId)) {
+            throw new IllegalStateException("Teacher does not exist in the classroom");
+        }
+
+        classroomRepository.save(classroom);
+    }
+
+    public void addStudentToClassroom(Long classroomId, Long studentId) {
+        ClassroomEntity classroom = classroomRepository.findById(classroomId)
+                .orElseThrow(() -> new IllegalArgumentException("Classroom not found"));
+
+        if (classroom.getStudentIds() == null) {
+            classroom.setStudentIds(new HashSet<>());
+        }
+
+        if (!classroom.getStudentIds().add(studentId)) {
+            throw new IllegalStateException("Student already exists in the classroom");
+        }
+
+        classroomRepository.save(classroom);
+    }
+
+    public void removeStudentFromClassroom(Long classroomId, Long studentId) {
+        ClassroomEntity classroom = classroomRepository.findById(classroomId)
+                .orElseThrow(() -> new IllegalArgumentException("Classroom not found"));
+
+        if (classroom.getStudentIds() == null || !classroom.getStudentIds().remove(studentId)) {
+            throw new IllegalStateException("Student does not exist in the classroom");
+        }
+
+        classroomRepository.save(classroom);
     }
 
     // TODO: implement this when auth-service is working
